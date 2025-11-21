@@ -2,93 +2,163 @@
 classDiagram
     direction TB
     
-    %% ==================== ENTIDADES ====================
-    class Customer {
-        +str name
-        +str email
-        +str phone
-        +str device_id
-    }
-    
-    class Order {
-        +str order_id
-        +Customer customer
-        +float total
-    }
-    
-    class NotificationRecord {
-        +str type
-        +str recipient
-        +str message
+    %% ==================== ENTIDAD ====================
+    class ReportRecord {
+        +str report_type
+        +str output_format
+        +str delivery_method
         +str timestamp
     }
     
-    %% ==================== STRATEGY PATTERN ====================
-    class Notifier {
+    %% ==================== TEMPLATE METHOD + STRATEGY: Generadores ====================
+    class ReportGenerator {
         <<abstract>>
-        +send(Order) NotificationRecord*
+        +generate(Dict) str
+        #_build_header() str
+        #_build_body(Dict) str*
+        #_build_footer() str
         +get_type() str*
+        +get_title() str*
     }
     
-    class EmailNotifier {
-        +send(Order) NotificationRecord
+    class SalesReportGenerator {
+        +_build_body(Dict) str
         +get_type() str
+        +get_title() str
     }
     
-    class SMSNotifier {
-        +send(Order) NotificationRecord
+    class InventoryReportGenerator {
+        +_build_body(Dict) str
         +get_type() str
+        +get_title() str
     }
     
-    class PushNotifier {
-        +send(Order) NotificationRecord
+    class FinancialReportGenerator {
+        +_build_body(Dict) str
         +get_type() str
+        +get_title() str
     }
     
-    class WhatsAppNotifier {
-        +send(Order) NotificationRecord
+    class AuditReportGenerator {
+        +_build_body(Dict) str
         +get_type() str
+        +get_title() str
+    }
+    
+    %% ==================== STRATEGY: Formateadores ====================
+    class OutputFormatter {
+        <<abstract>>
+        +format(str) str*
+        +get_format_type() str*
+        +get_file_extension() str*
+    }
+    
+    class PDFFormatter {
+        +format(str) str
+        +get_format_type() str
+        +get_file_extension() str
+    }
+    
+    class ExcelFormatter {
+        +format(str) str
+        +get_format_type() str
+        +get_file_extension() str
+    }
+    
+    class HTMLFormatter {
+        +format(str) str
+        +get_format_type() str
+        +get_file_extension() str
+    }
+    
+    %% ==================== STRATEGY: Métodos de Entrega ====================
+    class DeliveryMethod {
+        <<abstract>>
+        +deliver(str, str, str) void*
+        +get_method_type() str*
+    }
+    
+    class EmailDelivery {
+        -str recipient
+        +deliver(str, str, str) void
+        +get_method_type() str
+    }
+    
+    class DownloadDelivery {
+        +deliver(str, str, str) void
+        +get_method_type() str
+    }
+    
+    class CloudDelivery {
+        -str cloud_url
+        +deliver(str, str, str) void
+        +get_method_type() str
     }
     
     %% ==================== FACTORY PATTERN ====================
-    class NotifierFactory {
-        -Dict _notifiers$
+    class ReportGeneratorFactory {
+        -Dict _generators$
         +register(str, type)$
-        +create(str) Notifier$
-        +get_available_types() List~str~$
+        +create(str) ReportGenerator$
+    }
+    
+    class FormatterFactory {
+        -Dict _formatters$
+        +register(str, type)$
+        +create(str) OutputFormatter$
+    }
+    
+    class DeliveryFactory {
+        -Dict _methods$
+        +register(str, type)$
+        +create(str) DeliveryMethod$
     }
     
     %% ==================== CORE SYSTEM ====================
-    class OrderNotificationSystem {
-        -List~NotificationRecord~ _notification_history
-        +process_order(Order, List~str~) void
-        +get_notification_history() List~Dict~
+    class ReportSystem {
+        -List~ReportRecord~ _reports_generated
+        +generate_report(str, Dict, str, str) str
+        +get_report_history() List~Dict~
     }
     
     %% ==================== FACADE PATTERN ====================
-    class NotificationFacade {
-        -OrderNotificationSystem _system
-        +send_order_notifications(...) Dict
-        +send_quick_email(...) Dict
-        +send_all_channels(...) Dict
+    class ReportFacade {
+        -ReportSystem _system
+        +generate_sales_report_pdf_email(str, List) str
+        +generate_inventory_report_excel_download(List) str
+        +generate_financial_report_html_cloud(float, float) str
+        +generate_custom_report(str, Dict, str, str) str
+        +get_available_options() Dict
         +get_history() List~Dict~
     }
     
-    %% ==================== RELACIONES ====================
-    Notifier <|-- EmailNotifier : implements
-    Notifier <|-- SMSNotifier : implements
-    Notifier <|-- PushNotifier : implements
-    Notifier <|-- WhatsAppNotifier : implements
+    %% ==================== RELACIONES: Generadores ====================
+    ReportGenerator <|-- SalesReportGenerator : implements
+    ReportGenerator <|-- InventoryReportGenerator : implements
+    ReportGenerator <|-- FinancialReportGenerator : implements
+    ReportGenerator <|-- AuditReportGenerator : implements
     
-    NotifierFactory ..> Notifier : creates
+    %% ==================== RELACIONES: Formateadores ====================
+    OutputFormatter <|-- PDFFormatter : implements
+    OutputFormatter <|-- ExcelFormatter : implements
+    OutputFormatter <|-- HTMLFormatter : implements
     
-    OrderNotificationSystem ..> NotifierFactory : uses
-    OrderNotificationSystem o-- NotificationRecord : stores
-    OrderNotificationSystem ..> Order : processes
+    %% ==================== RELACIONES: Delivery ====================
+    DeliveryMethod <|-- EmailDelivery : implements
+    DeliveryMethod <|-- DownloadDelivery : implements
+    DeliveryMethod <|-- CloudDelivery : implements
     
-    NotificationFacade *-- OrderNotificationSystem : contains
+    %% ==================== RELACIONES: Factories ====================
+    ReportGeneratorFactory ..> ReportGenerator : creates
+    FormatterFactory ..> OutputFormatter : creates
+    DeliveryFactory ..> DeliveryMethod : creates
     
-    Order *-- Customer : contains
-    Notifier ..> Order : receives
-    Notifier ..> NotificationRecord : creates
+    %% ==================== RELACIONES: Core ====================
+    ReportSystem ..> ReportGeneratorFactory : uses
+    ReportSystem ..> FormatterFactory : uses
+    ReportSystem ..> DeliveryFactory : uses
+    ReportSystem o-- ReportRecord : stores
+    
+    %% ==================== RELACIONES: Facade ====================
+    ReportFacade o-- ReportSystem : contains
 ```

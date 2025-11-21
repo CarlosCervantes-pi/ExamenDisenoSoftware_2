@@ -1,0 +1,132 @@
+Examen Final - Diseño de Software
+
+Alumno: Cervantes Escatell Carlos Francisco 747985 
+Fecha: Noviembre 2025
+Ejercicios seleccionados: 1 y 2 (Tienda Online y Gestor de Documentos)
+
+================================================================================
+
+ESTRUCTURA DEL PROYECTO
+
+El presente repositorio contiene la implementación refactorizada de dos sistemas aplicando principios SOLID y patrones de diseño:
+
+ejercicio1_tienda_online_refactorizado.py
+ejercicio2_gestor_documentos_refactorizado.py
+diagramas_c1_ejercicio1.md (Contexto)
+diagramas_c2_ejercicio1.md (Contenedores)
+diagramas_c3_ejercicio1.md (Componentes)
+diagramas_c4_ejercicio1.md (Código)
+diagramas_c1_ejercicio2.md
+diagramas_c2_ejercicio2.md
+diagramas_c3_ejercicio2.md
+diagramas_c4_ejercicio2.md
+
+================================================================================
+
+EJERCICIO 1: SISTEMA DE NOTIFICACIONES DE PEDIDOS
+
+Descripción del sistema:
+Se desarrolló un sistema de notificaciones multi-canal para procesar pedidos en línea. El sistema permite enviar confirmaciones mediante diferentes canales de comunicación (email, SMS, notificaciones push y WhatsApp) de manera flexible y extensible.
+
+Principios SOLID aplicados:
+
+Single Responsibility Principle (SRP): Cada clase notificadora tiene una única responsabilidad específica. EmailNotifier solo maneja notificaciones por correo, SMSNotifier solo SMS, etc.
+
+Open/Closed Principle (OCP): El sistema está abierto a extensión pero cerrado a modificación. Se demostró agregando WhatsAppNotifier sin alterar el código existente.
+
+Liskov Substitution Principle (LSP): Todos los notificadores implementan la interfaz Notifier y son completamente intercambiables sin afectar el comportamiento del sistema.
+
+Interface Segregation Principle (ISP): La interfaz Notifier es específica y cohesiva, conteniendo únicamente los métodos necesarios para la funcionalidad de notificación.
+
+Dependency Inversion Principle (DIP): El sistema depende de la abstracción Notifier en lugar de implementaciones concretas, permitiendo mayor flexibilidad.
+
+Patrones de diseño implementados:
+
+Strategy Pattern (Comportamiento): Cada notificador representa una estrategia intercambiable de envío de notificaciones.
+
+Factory Pattern (Creacional): La clase NotifierFactory se encarga de crear instancias de notificadores según el tipo solicitado, centralizando la lógica de creación.
+
+Facade Pattern (Estructural): NotificationFacade proporciona una interfaz simplificada para el uso del sistema, ocultando la complejidad interna.
+
+Ejecución del programa:
+python ejercicio1_tienda_online_refactorizado.py
+
+Resultado esperado:
+El programa genera tres demostraciones que muestran el uso directo del sistema, el uso simplificado mediante el patrón Facade y la extensibilidad del sistema mediante el principio Open/Closed.
+
+================================================================================
+
+EJERCICIO 2: SISTEMA DE GENERACIÓN DE REPORTES
+
+Descripción del sistema:
+Sistema empresarial diseñado para generar diferentes tipos de reportes (ventas, inventario, financieros y auditoría) en múltiples formatos de salida (PDF, Excel, HTML) con opciones de entrega configurables (email, descarga directa o almacenamiento en la nube).
+
+Principios SOLID aplicados:
+
+Single Responsibility Principle (SRP): Existe una clara separación de responsabilidades entre generadores de contenido, formateadores de salida y métodos de entrega.
+
+Open/Closed Principle (OCP): El sistema permite agregar nuevos tipos de reportes (como AuditReportGenerator) sin modificar el código base existente.
+
+Liskov Substitution Principle (LSP): Todas las implementaciones de generadores, formateadores y métodos de entrega son completamente intercambiables.
+
+Interface Segregation Principle (ISP): Se diseñaron interfaces pequeñas y específicas para cada tipo de componente.
+
+Dependency Inversion Principle (DIP): El sistema depende de abstracciones (factories y clases base abstractas) en lugar de implementaciones concretas.
+
+Patrones de diseño implementados:
+
+Template Method (Comportamiento): La clase ReportGenerator define la estructura base del algoritmo de generación, permitiendo que las subclases implementen pasos específicos.
+
+Strategy Pattern (Comportamiento): Los formateadores y métodos de entrega representan estrategias intercambiables que pueden seleccionarse en tiempo de ejecución.
+
+Factory Pattern (Creacional): Se implementaron tres factories (ReportGeneratorFactory, FormatterFactory, DeliveryFactory) para centralizar la creación de componentes.
+
+Facade Pattern (Estructural): ReportFacade proporciona métodos predefinidos para casos de uso comunes, simplificando la interacción con el sistema.
+
+Ejecución del programa:
+python ejercicio2_gestor_documentos_refactorizado.py
+
+Resultado esperado:
+El programa ejecuta tres demostraciones que incluyen el uso del patrón Facade, uso directo del sistema y la demostración de extensibilidad mediante el nuevo generador de reportes de auditoría.
+
+================================================================================
+
+DIAGRAMAS C4
+
+Los diagramas siguen el modelo C4 para documentación de arquitectura de software:
+
+Nivel 1 (Contexto): Muestra el sistema en su contexto, incluyendo usuarios y sistemas externos con los que interactúa.
+
+Nivel 2 (Contenedores): Detalla los componentes principales del sistema (Facade, Core, Factories) y sus relaciones.
+
+Nivel 3 (Componentes): Presenta el diagrama de clases completo con todas las interfaces, implementaciones y relaciones entre componentes.
+
+Nivel 4 (Código): Proporciona el nivel más detallado, incluyendo métodos, atributos, tipos de datos y diagramas de secuencia para los flujos principales.
+
+================================================================================
+
+ASPECTOS DESTACADOS DE LA IMPLEMENTACIÓN
+
+Extensibilidad demostrada:
+En el ejercicio 1 se agregó WhatsAppNotifier y en el ejercicio 2 se incorporó AuditReportGenerator, ambos sin necesidad de modificar el código previamente escrito, demostrando el cumplimiento del principio Open/Closed.
+
+Casos de prueba completos:
+Ambos ejercicios incluyen casos de prueba que demuestran el uso directo del sistema, el uso simplificado mediante el patrón Facade, la extensibilidad y el manejo de historial de operaciones.
+
+Documentación en código:
+El código incluye comentarios explicativos sobre los principios SOLID y patrones de diseño aplicados en cada sección relevante.
+
+================================================================================
+
+REQUISITOS TÉCNICOS
+
+Python 3.7 o superior
+No se requieren dependencias externas
+
+================================================================================
+
+NOTA DEL AUTOR
+
+Este proyecto fue desarrollado como parte del examen final de la materia de Diseño de Software. El objetivo principal fue aplicar los principios SOLID y patrones de diseño estudiados durante el curso para crear sistemas mantenibles, extensibles y robustos que puedan evolucionar sin comprometer la estabilidad del código base.
+
+================================================================================

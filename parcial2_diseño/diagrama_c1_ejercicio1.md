@@ -1,20 +1,37 @@
-mermaid
-C4Context
-    title Sistema de Notificaciones de Pedidos - Contexto (C1)
+# C1 - Diagrama de Contexto - Sistema de Notificaciones
+
+## Nivel 1: Contexto del Sistema
+
+```mermaid
+graph TB
+    subgraph Usuarios
+        Cliente[Cliente<br/>Realiza pedidos en la tienda online]
+        Admin[Administrador<br/>Gestiona el sistema de notificaciones]
+    end
     
-    Person(cliente, "Cliente", "Realiza pedidos en la tienda online")
-    Person(admin, "Administrador", "Gestiona el sistema de notificaciones")
+    subgraph Sistema
+        NotifSystem[Sistema de Notificaciones<br/>Envía notificaciones de pedidos<br/>por múltiples canales]
+    end
     
-    System(notifSystem, "Sistema de Notificaciones", "Envía notificaciones de pedidos por múltiples canales")
+    subgraph Externos[Sistemas Externos]
+        EmailServer[Servidor SMTP<br/>Envío de correos electrónicos]
+        SMSGateway[Gateway SMS<br/>Envío de mensajes de texto]
+        PushService[Servicio Push<br/>Notificaciones push móviles]
+        WhatsAppAPI[WhatsApp API<br/>Mensajería WhatsApp]
+    end
     
-    System_Ext(emailServer, "Servidor SMTP", "Envío de correos electrónicos")
-    System_Ext(smsGateway, "Gateway SMS", "Envío de mensajes de texto")
-    System_Ext(pushService, "Servicio Push", "Notificaciones push móviles")
-    System_Ext(whatsappAPI, "WhatsApp API", "Mensajería WhatsApp")
+    Cliente -->|Realiza pedido| NotifSystem
+    Admin -->|Configura canales| NotifSystem
+    NotifSystem -->|Envía emails| EmailServer
+    NotifSystem -->|Envía SMS| SMSGateway
+    NotifSystem -->|Envía push| PushService
+    NotifSystem -->|Envía WhatsApp| WhatsAppAPI
     
-    Rel(cliente, notifSystem, "Realiza pedido")
-    Rel(admin, notifSystem, "Configura canales")
-    Rel(notifSystem, emailServer, "Envía emails")
-    Rel(notifSystem, smsGateway, "Envía SMS")
-    Rel(notifSystem, pushService, "Envía push")
-    Rel(notifSystem, whatsappAPI, "Envía WhatsApp")
+    style Cliente fill:#08427B
+    style Admin fill:#08427B
+    style NotifSystem fill:#1168BD
+    style EmailServer fill:#999999
+    style SMSGateway fill:#999999
+    style PushService fill:#999999
+    style WhatsAppAPI fill:#999999
+```

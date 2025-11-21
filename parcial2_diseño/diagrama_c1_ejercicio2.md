@@ -1,17 +1,34 @@
-C4Context
-    title Sistema de Generación de Reportes - Contexto (C1)
+# C1 - Diagrama de Contexto - Sistema de Generación de Reportes
+
+## Nivel 1: Contexto del Sistema
+
+```mermaid
+graph TB
+    subgraph Usuarios
+        Admin[Administrador<br/>Usuario que genera reportes<br/>empresariales]
+        Gerente[Gerente<br/>Consulta reportes financieros<br/>y de ventas]
+    end
     
-    Person(admin, "Administrador", "Usuario que genera reportes empresariales")
-    Person(gerente, "Gerente", "Consulta reportes financieros y de ventas")
+    subgraph Sistema
+        ReportSystem[Sistema de Reportes<br/>Genera reportes en múltiples formatos<br/>y los entrega por diversos canales]
+    end
     
-    System(reportSystem, "Sistema de Reportes", "Genera reportes en múltiples formatos y los entrega por diversos canales")
+    subgraph Externos[Sistemas Externos]
+        EmailServer[Servidor de Email<br/>SMTP para envío de reportes]
+        CloudStorage[Almacenamiento en la Nube<br/>AWS S3, Google Cloud Storage]
+        FileSystem[Sistema de Archivos<br/>Almacenamiento local para descargas]
+    end
     
-    System_Ext(emailServer, "Servidor de Email", "SMTP para envío de reportes")
-    System_Ext(cloudStorage, "Almacenamiento en la Nube", "AWS S3, Google Cloud Storage")
-    System_Ext(fileSystem, "Sistema de Archivos", "Almacenamiento local para descargas")
+    Admin -->|Genera reportes| ReportSystem
+    Gerente -->|Solicita reportes| ReportSystem
+    ReportSystem -->|Envía reportes por email| EmailServer
+    ReportSystem -->|Sube reportes a la nube| CloudStorage
+    ReportSystem -->|Guarda archivos para descarga| FileSystem
     
-    Rel(admin, reportSystem, "Genera reportes")
-    Rel(gerente, reportSystem, "Solicita reportes")
-    Rel(reportSystem, emailServer, "Envía reportes por email")
-    Rel(reportSystem, cloudStorage, "Sube reportes a la nube")
-    Rel(reportSystem, fileSystem, "Guarda archivos para descarga")
+    style Admin fill:#08427B
+    style Gerente fill:#08427B
+    style ReportSystem fill:#1168BD
+    style EmailServer fill:#999999
+    style CloudStorage fill:#999999
+    style FileSystem fill:#999999
+```

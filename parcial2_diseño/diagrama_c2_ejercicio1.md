@@ -1,21 +1,37 @@
-C4Container
-    title Sistema de Notificaciones de Pedidos - Contenedores (C2)
+# C2 - Diagrama de Contenedores - Sistema de Notificaciones
+
+## Nivel 2: Contenedores del Sistema
+
+```mermaid
+graph TB
+    subgraph Usuario
+        User[Usuario<br/>Cliente o Administrador]
+    end
     
-    Person(user, "Usuario", "Cliente o Administrador")
+    subgraph SistemaNotificaciones[Sistema de Notificaciones]
+        Facade[NotificationFacade<br/>Python<br/>Interfaz simplificada con<br/>métodos predefinidos]
+        Core[OrderNotificationSystem<br/>Python<br/>Orquestador principal<br/>del proceso]
+        Notifiers[Notificadores<br/>Python<br/>EmailNotifier, SMSNotifier,<br/>PushNotifier, WhatsAppNotifier]
+        Factory[NotifierFactory<br/>Python<br/>Crea instancias de<br/>notificadores]
+        Models[Modelos de Datos<br/>Python<br/>Customer, Order,<br/>NotificationRecord]
+    end
     
-    Container_Boundary(system, "Sistema de Notificaciones") {
-        Container(facade, "NotificationFacade", "Python", "Interfaz simplificada con métodos predefinidos")
-        Container(core, "OrderNotificationSystem", "Python", "Orquestador principal del proceso")
-        Container(notifiers, "Notificadores", "Python", "EmailNotifier, SMSNotifier, PushNotifier, WhatsAppNotifier")
-        Container(factory, "NotifierFactory", "Python", "Crea instancias de notificadores")
-        Container(models, "Modelos de Datos", "Python", "Customer, Order, NotificationRecord")
-    }
+    subgraph Externos[Servicios Externos]
+        External[SMTP, SMS Gateway,<br/>Push Service,<br/>WhatsApp API]
+    end
     
-    System_Ext(external, "Servicios Externos", "SMTP, SMS Gateway, Push Service, WhatsApp API")
+    User -->|Usa interfaz simplificada| Facade
+    Facade -->|Delega procesamiento| Core
+    Core -->|Solicita notificadores| Factory
+    Factory -->|Crea instancias| Notifiers
+    Core -.->|Utiliza| Models
+    Notifiers -->|Envía notificaciones| External
     
-    Rel(user, facade, "Usa interfaz simplificada")
-    Rel(facade, core, "Delega procesamiento")
-    Rel(core, factory, "Solicita notificadores")
-    Rel(factory, notifiers, "Crea instancias")
-    Rel(core, models, "Utiliza")
-    Rel(notifiers, external, "Envía notificaciones")
+    style User fill:#08427B
+    style Facade fill:#1168BD
+    style Core fill:#1168BD
+    style Notifiers fill:#1168BD
+    style Factory fill:#1168BD
+    style Models fill:#1168BD
+    style External fill:#999999
+```
